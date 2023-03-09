@@ -27,6 +27,25 @@ resource "cloudflare_access_policy" "code_server_indiv_access" {
   }
 }
 
+resource "cloudflare_access_application" "code_server_ssh" {
+  zone_id = data.cloudflare_zone.syoi.id
+  name    = "code-server (SSH access)"
+  domain  = cloudflare_record.code_server_ssh.hostname
+  type    = "ssh"
+}
+
+resource "cloudflare_access_policy" "code_server_ssh_access" {
+  application_id = cloudflare_access_application.code_server_ssh.id
+  zone_id        = data.cloudflare_zone.syoi.id
+  name           = "code-server SSH Access"
+  precedence     = "1"
+  decision       = "allow"
+
+  include {
+    email = [for user in local.users : user.email]
+  }
+}
+
 resource "random_password" "tunnel_secret" {
   length = 24
 }
@@ -45,6 +64,14 @@ resource "cloudflare_record" "code_server" {
   proxied = true
 }
 
+resource "cloudflare_record" "code_server_ssh" {
+  zone_id = data.cloudflare_zone.syoi.id
+  name    = "ssh-v2"
+  value   = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
+  type    = "CNAME"
+  proxied = true
+}
+
 resource "proxmox_vm_qemu" "syoi" {
   name = "syoi-code"
   desc = "VM instance for hosting code.syoi.org"
@@ -54,8 +81,9 @@ resource "proxmox_vm_qemu" "syoi" {
 
   clone = "null"
 
-  bios  = "ovmf"
-  agent = 1
+  bios    = "ovmf"
+  qemu_os = "l26"
+  agent   = 1
 
   memory  = 4096
   balloon = 2048
@@ -82,6 +110,7 @@ resource "proxmox_vm_qemu" "syoi" {
 }
 
 resource "tfe_workspace" "code-syoi-org" {
-  name         = "code-syoi-org"
-  organization = "syoi-org"
+  name           = "code-syoi-org"
+  organization   = "syoi-org"
+  execution_mode = "local"
 }

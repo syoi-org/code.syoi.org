@@ -58,7 +58,7 @@ resource "cloudflare_tunnel" "code_server" {
 
 resource "cloudflare_record" "code_server" {
   zone_id = data.cloudflare_zone.syoi.id
-  name    = "code-v2"
+  name    = "code"
   value   = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
   type    = "CNAME"
   proxied = true
@@ -66,7 +66,7 @@ resource "cloudflare_record" "code_server" {
 
 resource "cloudflare_record" "code_server_ssh" {
   zone_id = data.cloudflare_zone.syoi.id
-  name    = "ssh-v2"
+  name    = "ssh"
   value   = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
   type    = "CNAME"
   proxied = true

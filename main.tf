@@ -72,6 +72,14 @@ resource "cloudflare_record" "code_server_ssh" {
   proxied = true
 }
 
+resource "cloudflare_record" "leaderboard" {
+  zone_id = data.cloudflare_zone.syoi.id
+  name    = "leaderboard"
+  value   = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
+  type    = "CNAME"
+  proxied = true
+}
+
 resource "proxmox_vm_qemu" "syoi" {
   name = "syoi-code"
   desc = "VM instance for hosting code.syoi.org"

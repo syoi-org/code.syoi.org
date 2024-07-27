@@ -80,42 +80,42 @@ resource "cloudflare_record" "leaderboard" {
   proxied = true
 }
 
-resource "proxmox_vm_qemu" "syoi" {
-  name = "syoi-code"
-  desc = "VM instance for hosting code.syoi.org"
+# resource "proxmox_vm_qemu" "syoi" {
+#   name = "syoi-code"
+#   desc = "VM instance for hosting code.syoi.org"
 
-  target_node = "pve"
-  vmid        = 501
+#   target_node = "pve"
+#   vmid        = 501
 
-  clone = "null"
+#   clone = "null"
 
-  bios    = "ovmf"
-  qemu_os = "l26"
-  agent   = 1
+#   bios    = "ovmf"
+#   qemu_os = "l26"
+#   agent   = 1
 
-  memory  = 4096
-  balloon = 2048
-  sockets = 1
-  cores   = 4
-  cpu     = "host"
-  scsihw  = "virtio-scsi-pci"
+#   memory  = 4096
+#   balloon = 2048
+#   sockets = 1
+#   cores   = 4
+#   cpu     = "host"
+#   scsihw  = "virtio-scsi-pci"
 
-  disk {
-    type    = "scsi"
-    storage = "local-lvm"
-    size    = "32G"
-    format  = "raw"
-  }
+#   disk {
+#     type    = "scsi"
+#     storage = "local-lvm"
+#     size    = "64G"
+#     format  = "raw"
+#   }
 
-  network {
-    model  = "virtio"
-    bridge = "vmbr2"
-  }
+#   network {
+#     model  = "virtio"
+#     bridge = "vmbr2"
+#   }
 
-  // manually plug in custom Nix ISO and deploy NixOS config flake
-  oncreate         = false
-  automatic_reboot = false
-}
+#   // manually plug in custom Nix ISO and deploy NixOS config flake
+#   oncreate         = false
+#   automatic_reboot = false
+# }
 
 resource "tfe_workspace" "code-syoi-org" {
   name           = "code-syoi-org"

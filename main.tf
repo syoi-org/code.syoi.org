@@ -80,9 +80,9 @@ resource "cloudflare_record" "leaderboard" {
   proxied = true
 }
 
-resource "cloudflare_record" "tft24" {
+resource "cloudflare_record" "git" {
   zone_id = data.cloudflare_zone.syoi.id
-  name    = "tft24"
+  name    = "git"
   value   = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
   type    = "CNAME"
   proxied = true

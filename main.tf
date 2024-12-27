@@ -59,7 +59,7 @@ resource "cloudflare_tunnel" "code_server" {
 resource "cloudflare_record" "code_server" {
   zone_id = data.cloudflare_zone.syoi.id
   name    = "code"
-  value   = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
+  content = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
   type    = "CNAME"
   proxied = true
 }
@@ -67,7 +67,7 @@ resource "cloudflare_record" "code_server" {
 resource "cloudflare_record" "code_server_ssh" {
   zone_id = data.cloudflare_zone.syoi.id
   name    = "ssh"
-  value   = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
+  content = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
   type    = "CNAME"
   proxied = true
 }
@@ -75,7 +75,7 @@ resource "cloudflare_record" "code_server_ssh" {
 resource "cloudflare_record" "leaderboard" {
   zone_id = data.cloudflare_zone.syoi.id
   name    = "leaderboard"
-  value   = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
+  content = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
   type    = "CNAME"
   proxied = true
 }
@@ -83,9 +83,24 @@ resource "cloudflare_record" "leaderboard" {
 resource "cloudflare_record" "git" {
   zone_id = data.cloudflare_zone.syoi.id
   name    = "git"
-  value   = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
+  content = "${cloudflare_tunnel.code_server.id}.cfargotunnel.com"
   type    = "CNAME"
   proxied = true
+}
+
+resource "cloudflare_r2_bucket" "forgejo" {
+  account_id = data.cloudflare_zone.syoi.account_id
+  name       = "forgejo-data"
+}
+
+resource "cloudflare_r2_bucket" "forgejo-repo" {
+  account_id = data.cloudflare_zone.syoi.account_id
+  name       = "forgejo-repo"
+}
+
+resource "cloudflare_r2_bucket" "forgejo-litestream" {
+  account_id = data.cloudflare_zone.syoi.account_id
+  name       = "forgejo-litestream"
 }
 
 # resource "proxmox_vm_qemu" "syoi" {
